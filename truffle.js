@@ -3,7 +3,8 @@ require('babel-polyfill');
 
 var HDWalletProvider = require('truffle-hdwallet-provider');
 
-const mnemonic = 'stumble story behind hurt patient ball whisper art swift tongue ice alien';
+// this mnemonic ('0x6b19ce2a0506ebed76f45e2f60079814f81ca0c5') owns aragonpm.test and aragon.test
+const mnemonic = 'stumble story behind hurt patient ball whisper art swift tongue ice burger';
 
 module.exports = {
   networks: {
@@ -20,7 +21,7 @@ module.exports = {
     },
     ropsten: {
       network_id: 3,
-      // provider: new HDWalletProvider(mnemonic, 'https://ropsten.infura.io/'),
+      provider: new HDWalletProvider(mnemonic, 'https://ropsten.infura.io/'),
       gas: 4.712e6,
     },
     kovan: {
