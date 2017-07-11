@@ -66,7 +66,7 @@ contract Repo is Constants, Ownable {
     registerVersion(versionId, _newSemanticVersion);
   }
 
-  function registerVersion(uint versionId, uint16[3] semanticVersion) internal returns (bytes32, bytes32) {
+  function registerVersion(uint versionId, uint16[3] semanticVersion) internal {
     bytes32 majorLabel = sha3(uintToString(semanticVersion[0]));
     bytes32 majorNode = sha3(rootNode, majorLabel);
 
