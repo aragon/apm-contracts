@@ -1332,5 +1332,5 @@ module.exports = web3 => {
     return resolverContract.at(resolverAddress).content(node);
   }
 
-  return { ens, testRegistrar, getAddr, getContent }
+  return { ens, namehash, testRegistrar, getAddr, getContent }
 }
