@@ -13,7 +13,7 @@ contract RepoRegistry is AddrResolver, Ownable {
     address private masterRepo;
     ForwarderFactory private forwarderFactory;
 
-    event NewRepo(string name, address repo);
+    event NewRepo(bytes32 id, string name, address repo);
 
     function RepoRegistry(AbstractENS _ens, bytes32 _rootNode, address _masterRepo, ForwarderFactory _forwarderFactory) {
         rootNode = _rootNode;
@@ -34,7 +34,7 @@ contract RepoRegistry is AddrResolver, Ownable {
         ens.setResolver(node, address(this));
         repo.transferOwnership(msg.sender);
 
-        NewRepo(name, repo);
+        NewRepo(node, name, repo);
 
         return address(repo);
     }
