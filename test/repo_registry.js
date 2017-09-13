@@ -36,6 +36,8 @@ contract('Repo Registry', accounts => {
     it('can transfer ownership', async () => {
         await registry.transferOwnership(accounts[1])
         assert.equal(await registry.owner(), accounts[1], 'owner should have changed correctly')
+
+        await registry.transferOwnership(accounts[0], { from: accounts[1] }) // so afterEach hook doesnt break
     })
 
     it('fails when non-owner tries to set root owner', async () => {
