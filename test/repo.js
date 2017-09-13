@@ -65,7 +65,7 @@ contract('Repo', accounts => {
         })
 
         it('version is fetcheable by semantic version', async () => {
-            assertVersion(await repo.getSemanticVersion([1, 0, 0]), [1, 0, 0], initialCode, initialContent)
+            assertVersion(await repo.getBySemanticVersion([1, 0, 0]), [1, 0, 0], initialCode, initialContent)
         })
 
         it('version is fetcheable by contract address', async () => {
@@ -73,7 +73,7 @@ contract('Repo', accounts => {
         })
 
         it('version is fetcheable by version id', async () => {
-            assertVersion(await repo.getVersion(1), [1, 0, 0], initialCode, initialContent)
+            assertVersion(await repo.getByVersionId(1), [1, 0, 0], initialCode, initialContent)
         })
 
         it('fails when setting contract in non major version', async () => {
@@ -101,7 +101,7 @@ contract('Repo', accounts => {
             })
 
             it('new version is fetcheable by semantic version', async () => {
-                assertVersion(await repo.getSemanticVersion([2, 0, 0]), [2, 0, 0], newCode, newContent)
+                assertVersion(await repo.getBySemanticVersion([2, 0, 0]), [2, 0, 0], newCode, newContent)
             })
 
             it('new version is fetcheable by contract address', async () => {
@@ -109,11 +109,11 @@ contract('Repo', accounts => {
             })
 
             it('new version is fetcheable by version id', async () => {
-                assertVersion(await repo.getVersion(2), [2, 0, 0], newCode, newContent)
+                assertVersion(await repo.getByVersionId(2), [2, 0, 0], newCode, newContent)
             })
 
             it('old version is fetcheable by semantic version', async () => {
-                assertVersion(await repo.getSemanticVersion([1, 0, 0]), [1, 0, 0], initialCode, initialContent)
+                assertVersion(await repo.getBySemanticVersion([1, 0, 0]), [1, 0, 0], initialCode, initialContent)
             })
 
             it('old version is fetcheable by contract address', async () => {
@@ -121,7 +121,7 @@ contract('Repo', accounts => {
             })
 
             it('old version is fetcheable by version id', async () => {
-                assertVersion(await repo.getVersion(1), [1, 0, 0], initialCode, initialContent)
+                assertVersion(await repo.getByVersionId(1), [1, 0, 0], initialCode, initialContent)
             })
         })
     })

@@ -35,18 +35,18 @@ contract Repo is Ownable {
     }
 
     function getLatest() constant returns (uint16[3] semanticVersion, address contractAddress, bytes contentURI) {
-        return getVersion(versions.length - 1);
+        return getByVersionId(versions.length - 1);
     }
 
     function getLatestForContractAddress(address _contractAddress) constant returns (uint16[3] semanticVersion, address contractAddress, bytes contentURI) {
-        return getVersion(latestVersionIdForContract[_contractAddress]);
+        return getByVersionId(latestVersionIdForContract[_contractAddress]);
     }
 
-    function getSemanticVersion(uint16[3] _semanticVersion) constant returns (uint16[3] semanticVersion, address contractAddress, bytes contentURI) {
-        return getVersion(versionIdForSemantic[semanticVersionHash(_semanticVersion)]);
+    function getBySemanticVersion(uint16[3] _semanticVersion) constant returns (uint16[3] semanticVersion, address contractAddress, bytes contentURI) {
+        return getByVersionId(versionIdForSemantic[semanticVersionHash(_semanticVersion)]);
     }
 
-    function getVersion(uint _versionId) constant returns (uint16[3] semanticVersion, address contractAddress, bytes contentURI) {
+    function getByVersionId(uint _versionId) constant returns (uint16[3] semanticVersion, address contractAddress, bytes contentURI) {
         require(_versionId > 0);
         Version storage version = versions[_versionId];
         return (version.semanticVersion, version.contractAddress, version.contentURI);
