@@ -11,7 +11,7 @@ contract Repo is Ownable {
 
     Version[] versions;
     mapping (bytes32 => uint256) versionIdForSemantic;
-    mapping (address => uint256) lastVersionForContract;
+    mapping (address => uint256) latestVersionIdForContract;
 
     event NewVersion(uint256 versionId, uint16[3] semanticVersion);
 
@@ -29,7 +29,7 @@ contract Repo is Ownable {
 
         uint versionId = versions.push(Version(_newSemanticVersion, _contractAddress, _contentURI)) - 1;
         versionIdForSemantic[semanticVersionHash(_newSemanticVersion)] = versionId;
-        lastVersionForContract[_contractAddress] = versionId;
+        latestVersionIdForContract[_contractAddress] = versionId;
 
         NewVersion(versionId, _newSemanticVersion);
     }
@@ -39,7 +39,7 @@ contract Repo is Ownable {
     }
 
     function getLatestForContractAddress(address _contractAddress) constant returns (uint16[3] semanticVersion, address contractAddress, bytes contentURI) {
-        return getVersion(lastVersionForContract[_contractAddress]);
+        return getVersion(latestVersionIdForContract[_contractAddress]);
     }
 
     function getSemanticVersion(uint16[3] _semanticVersion) constant returns (uint16[3] semanticVersion, address contractAddress, bytes contentURI) {
@@ -58,12 +58,12 @@ contract Repo is Ownable {
         while (i < 3) {
             if (hasBumped) {
                 if (_newVersion[i] != 0) return false;
-                } else if (_newVersion[i] != _oldVersion[i]) {
-                    if (_newVersion[i] - _oldVersion[i] != 1) return false;
-                    hasBumped = true;
-                }
-                i++;
+            } else if (_newVersion[i] != _oldVersion[i]) {
+                if (_newVersion[i] - _oldVersion[i] != 1) return false;
+                hasBumped = true;
             }
+            i++;
+        }
         return hasBumped;
     }
 
