@@ -59,7 +59,7 @@ contract Repo is Ownable {
             if (hasBumped) {
                 if (_newVersion[i] != 0) return false;
             } else if (_newVersion[i] != _oldVersion[i]) {
-                if (_newVersion[i] - _oldVersion[i] != 1) return false;
+                if (_oldVersion[i] >= _newVersion[i] || _newVersion[i] - _oldVersion[i] != 1) return false;
                 hasBumped = true;
             }
             i++;
@@ -67,7 +67,7 @@ contract Repo is Ownable {
         return hasBumped;
     }
 
-    function semanticVersionHash(uint16[3] version) constant returns (bytes32) {
+    function semanticVersionHash(uint16[3] version) internal constant returns (bytes32) {
         return sha3(version[0], version[1], version[2]);
     }
 }

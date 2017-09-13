@@ -5,11 +5,8 @@ import "./Ownable.sol";
 import "./Repo.sol";
 import "./ForwarderFactory.sol";
 
-contract Constants {
-    AbstractENS constant ens = AbstractENS(0xbeefbeefbeefbeefbeefbeefbeefbeefbeefbeef); // replace on bytecode
-}
-
-contract RepoRegistry is Constants, AddrResolver, Ownable {
+contract RepoRegistry is AddrResolver, Ownable {
+    AbstractENS ens;
     bytes32 public rootNode;
     mapping (bytes32 => address) public registeredRepos;
 
@@ -18,10 +15,11 @@ contract RepoRegistry is Constants, AddrResolver, Ownable {
 
     event NewRepo(string name, address repo);
 
-    function VersionedReposRegistry(bytes32 _rootNode) {
-        masterRepo = new Repo();
-        forwarderFactory = new ForwarderFactory();
+    function RepoRegistry(AbstractENS _ens, bytes32 _rootNode, address _masterRepo, ForwarderFactory _forwarderFactory) {
         rootNode = _rootNode;
+        ens = _ens;
+        masterRepo = _masterRepo;
+        forwarderFactory = _forwarderFactory;
     }
 
     function newRepo(string name) returns (address) {
@@ -41,15 +39,18 @@ contract RepoRegistry is Constants, AddrResolver, Ownable {
         return address(repo);
     }
 
+    /**
+    * @dev After changing ownership of name, RepoRegistry will fail to create new records
+    */
+    function setRootOwner(address _newOwner) onlyOwner {
+        ens.setOwner(rootNode, _newOwner);
+    }
+
     function addr(bytes32 node) constant returns (address) {
         return registeredRepos[node];
     }
 
-    function newClonedRepo() returns (Repo) {
+    function newClonedRepo() internal returns (Repo) {
         return Repo(forwarderFactory.createForwarder(masterRepo));
-    }
-
-    function setRootOwner(address _newOwner) onlyOwner {
-        ens.setOwner(rootNode, _newOwner);
     }
 }

@@ -1,6 +1,6 @@
 pragma solidity ^0.4.0;
 
-import './AbstractENS.sol';
+import '../../contracts/AbstractENS.sol';
 
 /**
  * The ENS registry contract.
