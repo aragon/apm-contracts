@@ -17,6 +17,9 @@ contract('Repo Registry', accounts => {
     before(async () => {
         // Migration deployed ENS
         ens = await ENS.deployed()
+
+        // request rootnode from migrations repo registry
+        await RepoRegistry.at(RepoRegistry.address).setRootOwner(ensOwner)
     })
 
     beforeEach(async () => {

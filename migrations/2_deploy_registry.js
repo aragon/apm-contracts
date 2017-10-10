@@ -13,8 +13,6 @@ const oldRegistryAddrs = {
     ropsten: '0xaa4190514ce13c9848e70e0d26575adb82adada4',
 }
 
-const devNetworks = ['development', 'testrpc', 'development46']
-
 const name = 'aragonpm.test'
 const rootNode = namehash(name)
 // if registry was previously deployed, setting address here will claim ENS name
@@ -54,11 +52,6 @@ module.exports = (deployer, network, accounts) => {
         .then(repoFactory => deployer.deploy(RepoRegistry, ens.address, rootNode, ForwarderFactory.address))
         .then(() => {
             console.log('Deployed registry at', RepoRegistry.address)
-
-            // For tests it is important that accounts[0] is still the owner of rootnode
-            if (devNetworks.indexOf(network) > -1) {
-                return console.log('Skipping assigning name to RepoRegistry for development testing network')
-            }
 
             if (!oldRegistryAddrs[network]) {
                 console.log('Transfering name ownership')
