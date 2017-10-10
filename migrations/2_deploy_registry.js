@@ -9,12 +9,12 @@ const ensAddrs = {
     ropsten: '0x112234455C3a32FD11230C42E7Bccd4A84e02010',
 }
 
-const oldRegistryAddrs = {
-    ropsten: '0x1ec4a734236f11cc6d9f74e152a67393069b8ecb',
-}
+const oldRegistryAddr = RepoRegistry.address
 
 const name = 'aragonpm.test'
 const rootNode = namehash(name)
+
+let deployedENS = false
 // if registry was previously deployed, setting address here will claim ENS name
 
 const deployENS = (deployer, owner) => {
@@ -27,6 +27,7 @@ const deployENS = (deployer, owner) => {
             return promise.then(() => ens.setSubnodeOwner(rootNode, web3.sha3(comp), owner))
         }, Promise.resolve()).then(() => {
             console.log('Deployed ENS instance at', ens.address)
+            deployedENS = true
             return ens
         })
     })
@@ -56,12 +57,12 @@ module.exports = (deployer, network, accounts) => {
         .then(() => {
             console.log('Deployed registry at', RepoRegistry.address)
 
-            if (!oldRegistryAddrs[network]) {
+            if (!oldRegistryAddr || deployedENS) {
                 console.log('Transfering name ownership')
                 return ens.setOwner(rootNode, RepoRegistry.address)
             } else {
                 console.log('Requesting name ownership from old registry')
-                return RepoRegistry.at(oldRegistryAddrs[network]).setRootOwner(RepoRegistry.address)
+                return RepoRegistry.at(oldRegistryAddr).setRootOwner(RepoRegistry.address)
             }
         })
         .then(() => RepoRegistry.at(RepoRegistry.address).setResolver())
