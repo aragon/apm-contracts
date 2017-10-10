@@ -25,7 +25,10 @@ const deployENS = (deployer, owner) => {
         return nameComponents.reduce((promise, comp, i) => {
             const rootNode = i > 0 ? namehash(nameComponents.slice(0, i)) : '0x00'
             return promise.then(() => ens.setSubnodeOwner(rootNode, web3.sha3(comp), owner))
-        }, Promise.resolve()).then(() => ens)
+        }, Promise.resolve()).then(() => {
+            console.log('Deployed ENS instance at', ens.address)
+            return ens
+        })
     })
 }
 

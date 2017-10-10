@@ -7,10 +7,6 @@
     "prepublish": "truffle compile",
     "test": "truffle test"
   },
-  "files": [
-    "index.js",
-    "build/"
-  ],
   "author": "Aragon",
   "license": "GPL-3.0",
   "dependencies": {
