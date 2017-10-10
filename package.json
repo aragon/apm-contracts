@@ -1,5 +1,5 @@
 {
-  "name": "aragon-package-manager",
+  "name": "@aragon/apm-contracts",
   "version": "1.0.0",
   "description": "Contracts for Aragon Package Manager",
   "main": "index.js",
@@ -11,8 +11,8 @@
     "index.js",
     "build/"
   ],
-  "author": "Jorge Izquierdo (Aragon)",
-  "license": "GPLv3",
+  "author": "Aragon",
+  "license": "GPL-3.0",
   "dependencies": {
     "babel-polyfill": "^6.23.0",
     "eth-ens-namehash": "^2.0.0",
