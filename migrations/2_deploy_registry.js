@@ -9,7 +9,8 @@ const ensAddrs = {
     ropsten: '0x112234455C3a32FD11230C42E7Bccd4A84e02010',
 }
 
-const oldRegistryAddr = RepoRegistry.address
+let oldRegistryAddr = null
+try { oldRegistryAddr = RepoRegistry.address } catch (e) {}
 
 const name = 'aragonpm.test'
 const rootNode = namehash(name)
