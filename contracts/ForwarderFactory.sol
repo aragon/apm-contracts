@@ -45,8 +45,12 @@ contract ForwarderFactory {
 }
 
 contract Forwarder is DelegateProxy {
-    address constant target = 0xBEeFbeefbEefbeEFbeEfbEEfBEeFbeEfBeEfBeef;
+    // After compiling contract, `beefbeef...` is replaced in the bytecode by the real target address
+    address constant target = 0xBEeFbeefbEefbeEFbeEfbEEfBEeFbeEfBeEfBeef; // checksumed to silence warning
 
+    /*
+    * @dev Forwards all calls to target
+    */
     function () payable {
         delegatedFwd(target, msg.data);
     }

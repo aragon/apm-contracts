@@ -14,25 +14,36 @@ contract RepoRegistry is AddrResolver, Ownable {
 
     event NewRepo(bytes32 id, string name, address repo);
 
+    /**
+    * @dev In order to function correctly, Registry must be set as the owner of the rootNode record in the ENS
+    * @param _ens Reference to the ENS Registry
+    * @param _rootNode ENS namehash where the registry is running. Example: namehash("aragonpm.eth")
+    * @param _repoFactory Forwarder factory instance that deploys forwarders to Repo contracts
+    */
     function RepoRegistry(AbstractENS _ens, bytes32 _rootNode, ForwarderFactory _repoFactory) {
         rootNode = _rootNode;
         ens = _ens;
         repoFactory = _repoFactory;
     }
 
-    function newRepo(string name) returns (address) {
-        bytes32 label = sha3(name);
+    /**
+    * @notice Create new repo in registry with `_name`
+    * @param _name Repo name
+    */
+    function newRepo(string _name) returns (address) {
+        bytes32 label = sha3(_name);
         bytes32 node = sha3(rootNode, label);
         require(registeredRepos[node] == 0);
 
         Repo repo = newClonedRepo();
         registeredRepos[node] = address(repo);
 
+        // Creates [name] subdomain in the rootNode and sets registry as resolver
         ens.setSubnodeOwner(rootNode, label, address(this));
         ens.setResolver(node, address(this));
         repo.transferOwnership(msg.sender);
 
-        NewRepo(node, name, repo);
+        NewRepo(node, _name, repo);
 
         return address(repo);
     }
