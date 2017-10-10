@@ -29,11 +29,12 @@ module.exports = {
       provider:  new HDWalletProvider(mnemonic, 'https://kovan.aragon.one'),
       gas: 4.6e6,
     },
-    development46: {
-      network_id: 15,
-      host: 'localhost',
-      port: 8546,
-      gas: 1e8,
+    coverage: {
+      host: "localhost",
+      network_id: "*",
+      port: 8555,
+      gas: 0xffffffffff,
+      gasPrice: 0x01
     },
   },
   build: {},
