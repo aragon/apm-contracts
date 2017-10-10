@@ -12,20 +12,15 @@ contract('Repo Registry', accounts => {
 
     const ensOwner = accounts[0]
 
-    const rootNode = namehash('aragonpm.eth')
+    const rootNode = namehash('aragonpm.test')
 
     before(async () => {
-        // Simulate ENS and ownership of aragonpm.eth
-        ens = await ENS.new()
-        ens.setSubnodeOwner('0x00', web3.sha3('eth'), ensOwner)
-        ens.setSubnodeOwner(namehash('eth'), web3.sha3('aragonpm'), ensOwner)
+        // Migration deployed ENS
+        ens = await ENS.deployed()
     })
 
     beforeEach(async () => {
-        const masterRepo = await Repo.new()
-        const factoryInitcode = ForwarderFactory.binary.replace('beefbeefbeefbeefbeefbeefbeefbeefbeefbeef', masterRepo.address.slice(2))
-        const forwarderFactory = await ForwarderFactory.new({ data: factoryInitcode })
-        registry = await RepoRegistry.new(ens.address, rootNode, forwarderFactory.address)
+        registry = await RepoRegistry.new(ens.address, rootNode, ForwarderFactory.address)
         await ens.setOwner(rootNode, registry.address)
     })
 
@@ -33,8 +28,8 @@ contract('Repo Registry', accounts => {
         await registry.setRootOwner(ensOwner) // transfer name ownership back
     })
 
-    it('registry should be name owner for aragonpm.eth', async () => {
-        assert.equal(await ens.owner(namehash('aragonpm.eth')), registry.address, 'should be owner')
+    it('registry should be name owner for aragonpm.test', async () => {
+        assert.equal(await ens.owner(rootNode), registry.address, 'should be owner')
     })
 
     it('can transfer ownership', async () => {
@@ -50,11 +45,11 @@ contract('Repo Registry', accounts => {
         })
     })
 
-    context('creating test.aragonpm.eth repo', () => {
+    context('creating test.aragonpm.test repo', () => {
         let repoAddr = {}
         const repoOwner = accounts[1]
 
-        const testName = namehash('test.aragonpm.eth')
+        const testName = namehash('test.aragonpm.test')
 
         beforeEach(async () => {
             const receipt = await registry.newRepo('test', { from: repoOwner, gas: 2e6 })
