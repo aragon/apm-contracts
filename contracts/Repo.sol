@@ -15,10 +15,17 @@ contract Repo is Ownable {
 
     event NewVersion(uint256 versionId, uint16[3] semanticVersion);
 
+    /**
+    * @notice Create new version for repo
+    * @param _newSemanticVersion Semantic version for new repo version
+    * @param _contractAddress address for smart contract logic for version (if set to 0, it uses last versions' contractAddress)
+    * @param _contentURI External URI for fetching new version's content
+    */
     function newVersion(uint16[3] _newSemanticVersion, address _contractAddress, bytes _contentURI) onlyOwner {
         if (versions.length > 0) {
             Version storage lastVersion = versions[versions.length - 1];
             require(isValidBump(lastVersion.semanticVersion, _newSemanticVersion));
+            if (_contractAddress == 0) _contractAddress = lastVersion.contractAddress;
             // Only allows smart contract change on major version bumps
             require(lastVersion.contractAddress == _contractAddress || _newSemanticVersion[0] > lastVersion.semanticVersion[0]);
         } else {

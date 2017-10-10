@@ -76,6 +76,11 @@ contract('Repo', accounts => {
             assertVersion(await repo.getByVersionId(1), [1, 0, 0], initialCode, initialContent)
         })
 
+        it('setting contract address to 0 reuses last version address', async () => {
+            await repo.newVersion([1, 1, 0], '0x00', initialContent)
+            assertVersion(await repo.getByVersionId(2), [1, 1, 0], initialCode, initialContent)
+        })
+
         it('fails when setting contract in non major version', async () => {
             return assertInvalidOpcode(async () => {
                 await repo.newVersion([1, 1, 0], accounts[2], initialContent)
@@ -84,7 +89,7 @@ contract('Repo', accounts => {
 
         it('fails when version bump is invalid', async () => {
             return assertInvalidOpcode(async () => {
-                await repo.newVersion([1, 1, 0], initialContent, initialContent)
+                await repo.newVersion([1, 2, 0], initialCode, initialContent)
             })
         })
 
