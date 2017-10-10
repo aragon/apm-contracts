@@ -1,7 +1,7 @@
 pragma solidity ^0.4.15;
 
 contract DelegateProxy {
-    bool constant IS_BYZANTIUM = false;
+    bool constant IS_BYZANTIUM = true;
     /**
     * @dev Performs a delegatecall and returns whatever the delegatecall returned (entire context execution will return!)
     * @param _dst Destination address to perform the delegatecall

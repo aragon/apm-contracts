@@ -3,8 +3,8 @@ require('babel-polyfill');
 
 var HDWalletProvider = require('truffle-hdwallet-provider');
 
-// this mnemonic ('0x6b19ce2a0506ebed76f45e2f60079814f81ca0c5') owns aragonpm.test and aragon.test
-const mnemonic = 'stumble story behind hurt patient ball whisper art swift tongue ice burger';
+// mnemonic in env variable (address: 0x4c7c86b2a848508494f32033c1a8694d98712a9b) owns aragonpm.test and aragon.test, and is owner of deployed registries
+const mnemonic = process.env.APM_MNEMONIC || 'burger burger burger burger burger burger burger burger burger burger burger burger';
 
 module.exports = {
   networks: {
