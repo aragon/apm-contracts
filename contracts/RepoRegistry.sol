@@ -10,16 +10,14 @@ contract RepoRegistry is AddrResolver, Ownable {
     bytes32 public rootNode;
     mapping (bytes32 => address) public registeredRepos;
 
-    address private masterRepo;
-    ForwarderFactory private forwarderFactory;
+    ForwarderFactory private repoFactory;
 
     event NewRepo(bytes32 id, string name, address repo);
 
-    function RepoRegistry(AbstractENS _ens, bytes32 _rootNode, address _masterRepo, ForwarderFactory _forwarderFactory) {
+    function RepoRegistry(AbstractENS _ens, bytes32 _rootNode, ForwarderFactory _repoFactory) {
         rootNode = _rootNode;
         ens = _ens;
-        masterRepo = _masterRepo;
-        forwarderFactory = _forwarderFactory;
+        repoFactory = _repoFactory;
     }
 
     function newRepo(string name) returns (address) {
@@ -51,6 +49,6 @@ contract RepoRegistry is AddrResolver, Ownable {
     }
 
     function newClonedRepo() internal returns (Repo) {
-        return Repo(forwarderFactory.createForwarder(masterRepo));
+        return Repo(repoFactory.createForwarder());
     }
 }

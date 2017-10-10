@@ -2,9 +2,10 @@ const { assertInvalidOpcode } = require('./helpers/assertThrow')
 const namehash = require('eth-ens-namehash').hash
 
 const ENS = artifacts.require('ENS')
-const RepoRegistry = artifacts.require('RepoRegistryMock')
+const RepoRegistry = artifacts.require('RepoRegistry')
 const AddrResolver = artifacts.require('AddrResolver')
 const Repo = artifacts.require('Repo')
+const ForwarderFactory = artifacts.require('ForwarderFactory')
 
 contract('Repo Registry', accounts => {
     let ens, registry = {}
@@ -21,7 +22,10 @@ contract('Repo Registry', accounts => {
     })
 
     beforeEach(async () => {
-        registry = await RepoRegistry.new(ens.address, rootNode)
+        const masterRepo = await Repo.new()
+        const factoryInitcode = ForwarderFactory.binary.replace('beefbeefbeefbeefbeefbeefbeefbeefbeefbeef', masterRepo.address.slice(2))
+        const forwarderFactory = await ForwarderFactory.new({ data: factoryInitcode })
+        registry = await RepoRegistry.new(ens.address, rootNode, forwarderFactory.address)
         await ens.setOwner(rootNode, registry.address)
     })
 
@@ -53,7 +57,7 @@ contract('Repo Registry', accounts => {
         const testName = namehash('test.aragonpm.eth')
 
         beforeEach(async () => {
-            const receipt = await registry.newRepo('test', { from: repoOwner })
+            const receipt = await registry.newRepo('test', { from: repoOwner, gas: 2e6 })
             repoAddr = receipt.logs.filter(x => x.event == 'NewRepo')[0].args.repo
         })
 
