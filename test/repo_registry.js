@@ -63,7 +63,7 @@ contract('Repo Registry', accounts => {
         const testName = namehash('test.aragonpm.test')
 
         beforeEach(async () => {
-            const receipt = await registry.newRepo('test', { from: repoOwner, gas: 2e6 })
+            const receipt = await registry.newRepo('test', { from: repoOwner })
             repoAddr = receipt.logs.filter(x => x.event == 'NewRepo')[0].args.repo
         })
 
@@ -76,10 +76,21 @@ contract('Repo Registry', accounts => {
             assert.equal(await Repo.at(repoAddr).owner(), repoOwner, 'repo owner should be correct')
         })
 
+        it('repo should have 0 versions', async () => {
+            assert.equal(await Repo.at(repoAddr).getVersionsCount(), 0, 'shouldnt have crated version')
+        })
+
         it('fails when creating repo with existing name', async () => {
             return assertInvalidOpcode(async () => {
                 await registry.newRepo('test')
             })
         })
+    })
+
+    it('can create repo with version', async () => {
+        const receipt = await registry.newRepoWithVersion('test', [1, 0, 0], '0x00', '0x00')
+        repoAddr = receipt.logs.filter(x => x.event == 'NewRepo')[0].args.repo
+
+        assert.equal(await Repo.at(repoAddr).getVersionsCount(), 1, 'should have crated version')
     })
 })

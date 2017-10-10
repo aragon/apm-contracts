@@ -59,6 +59,11 @@ contract Repo is Ownable {
         return (version.semanticVersion, version.contractAddress, version.contentURI);
     }
 
+    function getVersionsCount() constant returns (uint256) {
+        uint256 l = versions.length;
+        return l > 0 ? l - 1 : 0;
+    }
+
     function isValidBump(uint16[3] _oldVersion, uint16[3] _newVersion) constant returns (bool) {
         bool hasBumped;
         uint i = 0;

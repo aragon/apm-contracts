@@ -31,20 +31,27 @@ contract RepoRegistry is AddrResolver, Ownable {
     * @param _name Repo name
     */
     function newRepo(string _name) public returns (address) {
-        bytes32 label = sha3(_name);
-        bytes32 node = sha3(rootNode, label);
-        require(registeredRepos[node] == 0);
-
-        Repo repo = newClonedRepo();
-        registeredRepos[node] = address(repo);
-
-        // Creates [name] subdomain in the rootNode and sets registry as resolver
-        ens.setSubnodeOwner(rootNode, label, address(this));
-        ens.setResolver(node, address(this));
+        Repo repo = _newRepo(_name);
         repo.transferOwnership(msg.sender);
+        return address(repo);
+    }
 
-        NewRepo(node, _name, repo);
-
+    /**
+    * @notice Create new repo in registry with `_name` and first repo version
+    * @param _name Repo name
+    * @param _initialSemanticVersion Semantic version for new repo version
+    * @param _contractAddress address for smart contract logic for version (if set to 0, it uses last versions' contractAddress)
+    * @param _contentURI External URI for fetching new version's content
+    */
+    function newRepoWithVersion(
+        string _name,
+        uint16[3] _initialSemanticVersion,
+        address _contractAddress,
+        bytes _contentURI
+    ) public returns (address) {
+        Repo repo = _newRepo(_name);
+        repo.newVersion(_initialSemanticVersion, _contractAddress, _contentURI);
+        repo.transferOwnership(msg.sender);
         return address(repo);
     }
 
@@ -71,6 +78,23 @@ contract RepoRegistry is AddrResolver, Ownable {
     function addr(bytes32 node) constant returns (address) {
         // Resolve to RepoRegistry if asked for root node, otherwise return repo address if exists
         return node == rootNode ? address(this) : registeredRepos[node];
+    }
+
+    function _newRepo(string _name) internal returns (Repo) {
+        bytes32 label = sha3(_name);
+        bytes32 node = sha3(rootNode, label);
+        require(registeredRepos[node] == 0);
+
+        Repo repo = newClonedRepo();
+        registeredRepos[node] = address(repo);
+
+        // Creates [name] subdomain in the rootNode and sets registry as resolver
+        ens.setSubnodeOwner(rootNode, label, address(this));
+        ens.setResolver(node, address(this));
+
+        NewRepo(node, _name, repo);
+
+        return repo;
     }
 
     function newClonedRepo() internal returns (Repo) {
