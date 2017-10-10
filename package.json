@@ -1,6 +1,6 @@
 {
   "name": "@aragon/apm-contracts",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Contracts for Aragon Package Manager",
   "main": "index.js",
   "scripts": {
