@@ -1,5 +1,7 @@
-require('babel-register');
-require('babel-polyfill');
+if (!process.env.NO_BABEL) {
+    require('babel-register')
+    require('babel-polyfill')
+}
 
 var HDWalletProvider = require('truffle-hdwallet-provider');
 
