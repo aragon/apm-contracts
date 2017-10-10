@@ -10,7 +10,7 @@ const ensAddrs = {
 }
 
 const oldRegistryAddrs = {
-    ropsten: '0xaa4190514ce13c9848e70e0d26575adb82adada4',
+    ropsten: '0x21554b24706cd57bad576e338db0cb2768e639c9',
 }
 
 const name = 'aragonpm.test'
