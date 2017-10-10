@@ -30,7 +30,7 @@ contract RepoRegistry is AddrResolver, Ownable {
     * @notice Create new repo in registry with `_name`
     * @param _name Repo name
     */
-    function newRepo(string _name) returns (address) {
+    function newRepo(string _name) public returns (address) {
         bytes32 label = sha3(_name);
         bytes32 node = sha3(rootNode, label);
         require(registeredRepos[node] == 0);
@@ -49,14 +49,28 @@ contract RepoRegistry is AddrResolver, Ownable {
     }
 
     /**
-    * @dev After changing ownership of name, RepoRegistry will fail to create new records
+    * @dev After receiving ownership of rootnode, this can be called to set contract as
+    *      resolver for rootnode, resulting in rootnode resolving to the RepoRegistry address
     */
-    function setRootOwner(address _newOwner) onlyOwner {
+    function setResolver() public {
+        ens.setResolver(rootNode, address(this));
+    }
+
+    /**
+    * @dev Transfers rootNode ownership (used for migrating to another Registry)
+    *      After changing ownership of name, RepoRegistry will fail to create new records
+    */
+    function setRootOwner(address _newOwner) public onlyOwner {
         ens.setOwner(rootNode, _newOwner);
     }
 
+    /**
+    * @dev Conformance to ENS AddrResolver
+    * @param node ENS namehash for name
+    */
     function addr(bytes32 node) constant returns (address) {
-        return registeredRepos[node];
+        // Resolve to RepoRegistry if asked for root node, otherwise return repo address if exists
+        return node == rootNode ? address(this) : registeredRepos[node];
     }
 
     function newClonedRepo() internal returns (Repo) {

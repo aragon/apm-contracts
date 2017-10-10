@@ -64,4 +64,5 @@ module.exports = (deployer, network, accounts) => {
                 return RepoRegistry.at(oldRegistryAddrs[network]).setRootOwner(RepoRegistry.address)
             }
         })
+        .then(() => RepoRegistry.at(RepoRegistry.address).setResolver())
 }

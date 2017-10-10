@@ -25,6 +25,7 @@ contract('Repo Registry', accounts => {
     beforeEach(async () => {
         registry = await RepoRegistry.new(ens.address, rootNode, ForwarderFactory.address)
         await ens.setOwner(rootNode, registry.address)
+        await registry.setResolver()
     })
 
     afterEach(async () => {
@@ -46,6 +47,13 @@ contract('Repo Registry', accounts => {
         return assertInvalidOpcode(async () => {
             await registry.transferOwnership(accounts[1], { from: accounts[2] })
         })
+    })
+
+    it('registry rootnode should resolve to registry address', async () => {
+        const resolver = await ens.resolver(rootNode)
+        const addr = await AddrResolver.at(resolver).addr(rootNode)
+
+        assert.equal(addr, registry.address, 'name should have resolved to registry address')
     })
 
     context('creating test.aragonpm.test repo', () => {
