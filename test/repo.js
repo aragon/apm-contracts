@@ -1,4 +1,4 @@
-const { assertInvalidOpcode } = require('./helpers/assertThrow')
+const { assertRevert } = require('./helpers/assertThrow')
 
 const Repo = artifacts.require('Repo')
 
@@ -30,13 +30,13 @@ contract('Repo', accounts => {
     })
 
     it('cannot create invalid first version', async () => {
-        return assertInvalidOpcode(async () => {
+        return assertRevert(async () => {
             await repo.newVersion([1, 1, 0], '0x00', '0x00')
         })
     })
 
     it('non-owners cannot create versions', async () => {
-        return assertInvalidOpcode(async () => {
+        return assertRevert(async () => {
             await repo.newVersion([1, 0, 0], '0x00', '0x00', { from: accounts[2] })
         })
     })
@@ -82,13 +82,13 @@ contract('Repo', accounts => {
         })
 
         it('fails when setting contract in non major version', async () => {
-            return assertInvalidOpcode(async () => {
+            return assertRevert(async () => {
                 await repo.newVersion([1, 1, 0], accounts[2], initialContent)
             })
         })
 
         it('fails when version bump is invalid', async () => {
-            return assertInvalidOpcode(async () => {
+            return assertRevert(async () => {
                 await repo.newVersion([1, 2, 0], initialCode, initialContent)
             })
         })

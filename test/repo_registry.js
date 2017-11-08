@@ -1,4 +1,4 @@
-const { assertInvalidOpcode } = require('./helpers/assertThrow')
+const { assertRevert } = require('./helpers/assertThrow')
 const namehash = require('eth-ens-namehash').hash
 
 const ENS = artifacts.require('ENS')
@@ -44,7 +44,7 @@ contract('Repo Registry', accounts => {
     })
 
     it('fails when non-owner tries to set root owner', async () => {
-        return assertInvalidOpcode(async () => {
+        return assertRevert(async () => {
             await registry.transferOwnership(accounts[1], { from: accounts[2] })
         })
     })
@@ -56,8 +56,8 @@ contract('Repo Registry', accounts => {
         assert.equal(addr, registry.address, 'name should have resolved to registry address')
     })
 
+    let repoAddr = {}
     context('creating test.aragonpm.test repo', () => {
-        let repoAddr = {}
         const repoOwner = accounts[1]
 
         const testName = namehash('test.aragonpm.test')
@@ -81,7 +81,7 @@ contract('Repo Registry', accounts => {
         })
 
         it('fails when creating repo with existing name', async () => {
-            return assertInvalidOpcode(async () => {
+            return assertRevert(async () => {
                 await registry.newRepo('test')
             })
         })

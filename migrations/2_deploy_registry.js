@@ -6,6 +6,7 @@ const Repo = artifacts.require('Repo')
 const ForwarderFactory = artifacts.require('ForwarderFactory')
 
 const ensAddrs = {
+    mainnet: '0x314159265dd8dbb310642f98f50c066173c1259b',
     ropsten: '0x112234455C3a32FD11230C42E7Bccd4A84e02010',
 }
 
