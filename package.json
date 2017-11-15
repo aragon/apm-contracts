@@ -7,7 +7,10 @@
     "prepublish": "truffle compile",
     "test": "truffle test"
   },
-  "author": "Aragon",
+  "author": "Aragon Institution MTU <contact@aragon.one>",
+  "contributors": [
+    "Jorge Izquierdo <jorge@aragon.one>"
+  ],
   "license": "GPL-3.0",
   "dependencies": {
     "@aragon/core": "^1.0.2",
