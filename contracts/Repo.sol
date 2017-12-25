@@ -60,8 +60,7 @@ contract Repo is Ownable {
     }
 
     function getVersionsCount() constant returns (uint256) {
-        uint256 l = versions.length;
-        return l > 0 ? l - 1 : 0;
+        return versions.length;
     }
 
     function isValidBump(uint16[3] _oldVersion, uint16[3] _newVersion) constant returns (bool) {
