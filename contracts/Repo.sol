@@ -9,7 +9,7 @@ contract Repo is Ownable {
         bytes contentURI;
     }
 
-    Version[] versions;
+    Version[] versions; // index 0 is an empty version
     mapping (bytes32 => uint256) versionIdForSemantic;
     mapping (address => uint256) latestVersionIdForContract;
 
@@ -29,7 +29,7 @@ contract Repo is Ownable {
             // Only allows smart contract change on major version bumps
             require(lastVersion.contractAddress == _contractAddress || _newSemanticVersion[0] > lastVersion.semanticVersion[0]);
         } else {
-            versions.length += 1;
+            versions.length += 1;  // when creating first version, add an empty version at index 0
             uint16[3] memory zeroVersion;
             require(isValidBump(zeroVersion, _newSemanticVersion));
         }
@@ -61,7 +61,7 @@ contract Repo is Ownable {
 
     function getVersionsCount() constant returns (uint256) {
         uint256 l = versions.length;
-        return l > 0 ? l - 1 : 0;
+        return l > 0 ? l - 1 : 0;  // first version is indexed at 1 (created with 1st version), so we substract 1 from the length
     }
 
     function isValidBump(uint16[3] _oldVersion, uint16[3] _newVersion) constant returns (bool) {
