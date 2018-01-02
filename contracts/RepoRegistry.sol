@@ -1,16 +1,21 @@
 pragma solidity ^0.4.11;
 
+import "@aragon/core/contracts/apps/App.sol";
+import "@aragon/core/contracts/common/Initializable.sol";
+
 import "./AbstractENS.sol";
-import "./Ownable.sol";
 import "./Repo.sol";
 import "./ForwarderFactory.sol";
 
-contract RepoRegistry is AddrResolver, Ownable {
+contract RepoRegistry is AddrResolver, App, Initializable {
     AbstractENS ens;
     bytes32 public rootNode;
     mapping (bytes32 => address) public registeredRepos;
 
     ForwarderFactory private repoFactory;
+
+    bytes32 public constant CREATE_REPO_ROLE = bytes32(1);
+    bytes32 public constant SET_ROOT_OWNER_ROLE = bytes32(2);
 
     event NewRepo(bytes32 id, string name, address repo);
 
@@ -20,7 +25,11 @@ contract RepoRegistry is AddrResolver, Ownable {
     * @param _rootNode ENS namehash where the registry is running. Example: namehash("aragonpm.eth")
     * @param _repoFactory Forwarder factory instance that deploys forwarders to Repo contracts
     */
-    function RepoRegistry(AbstractENS _ens, bytes32 _rootNode, ForwarderFactory _repoFactory) {
+    function initialize(
+        AbstractENS _ens,
+        bytes32 _rootNode,
+        ForwarderFactory _repoFactory
+    ) onlyInit public {
         rootNode = _rootNode;
         ens = _ens;
         repoFactory = _repoFactory;
@@ -30,9 +39,8 @@ contract RepoRegistry is AddrResolver, Ownable {
     * @notice Create new repo in registry with `_name`
     * @param _name Repo name
     */
-    function newRepo(string _name) public returns (address) {
+    function newRepo(string _name) public auth(CREATE_REPO_ROLE) returns (address) {
         Repo repo = _newRepo(_name);
-        repo.transferOwnership(msg.sender);
         return address(repo);
     }
 
@@ -48,10 +56,9 @@ contract RepoRegistry is AddrResolver, Ownable {
         uint16[3] _initialSemanticVersion,
         address _contractAddress,
         bytes _contentURI
-    ) public returns (address) {
+    ) public auth(CREATE_REPO_ROLE) returns (address) {
         Repo repo = _newRepo(_name);
         repo.newVersion(_initialSemanticVersion, _contractAddress, _contentURI);
-        repo.transferOwnership(msg.sender);
         return address(repo);
     }
 
@@ -67,7 +74,7 @@ contract RepoRegistry is AddrResolver, Ownable {
     * @dev Transfers rootNode ownership (used for migrating to another Registry)
     *      After changing ownership of name, RepoRegistry will fail to create new records
     */
-    function setRootOwner(address _newOwner) public onlyOwner {
+    function setRootOwner(address _newOwner) public auth(SET_ROOT_OWNER_ROLE) {
         ens.setOwner(rootNode, _newOwner);
     }
 
