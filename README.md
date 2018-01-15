@@ -1,5 +1,9 @@
 # Aragon Package Manager
 
+### This repo is has been deprecated. The APM is now part of [aragonOS](https://github.com/aragon/aragonOS/tree/dev/contracts/apm).
+
+## Old documentation
+
 The Aragon Package Manager allows for management and discoverability of applications to be run in the context of AragonOS organizations.
 
 Its main goals are:
